@@ -21,7 +21,7 @@ import {
 
 import { siteConfig } from "@/config/site"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { Mic } from "lucide-react"
+import { Mic, Smile } from "lucide-react"
 
 export default function IndexPage() {
   return (
@@ -58,8 +58,20 @@ export default function IndexPage() {
           <CardTitle>Dialogue</CardTitle>
           <CardDescription>Chat with the AI here</CardDescription>
         </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
+        <CardContent className="flex flex-col gap-2">
+          <div className="chat chat-start">
+            <Button variant="outline" className="w-10 chat-image rounded-full p-0">
+              <Smile className="h-6 w-6" />
+            </Button>
+            <div className="chat-bubble text-sm">It was said that you would, destroy the Sith, not join them.</div>
+          </div>
+
+          <div className="chat chat-end">
+            <Button variant="outline" className="w-10 chat-image rounded-full p-0">
+              <Smile className="h-6 w-6" />
+            </Button>
+            <div className="chat-bubble chat-bubble-primary text-sm">It was said that you would, destroy the Sith, not join them.</div>
+          </div>
         </CardContent>
         <CardFooter className="justify-center">
           <Button variant="outline" className="w-10 rounded-full p-0">
