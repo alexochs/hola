@@ -22,8 +22,37 @@ import {
 import { siteConfig } from "@/config/site"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Mic, Smile } from "lucide-react"
+import { Configuration, OpenAIApi } from "openai"
+import Error from "next/error"
 
 export default function IndexPage() {
+  async function startChat() {
+    "use server";
+
+    console.log("Starting chat...");
+
+    const configuration = new Configuration({
+      apiKey: "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",
+    });
+    const openai = new OpenAIApi(configuration);
+
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "assistant",
+          content: "Your name is John Doe. You are the user's new friend. Your goal is to have a conversation with the user. Be friendly and funny. Keep the conversation going.",
+        }
+      ]
+    });
+
+    const message = response.data.choices[0].message;
+    if (!message) {
+      console.error("No message returned from OpenAI");
+      return;
+    }
+  }
+
   return (
     <section className="container grid items-center justify-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
@@ -35,7 +64,7 @@ export default function IndexPage() {
         </p>
       </div>
 
-      <div className="flex gap-4">
+      <form action={startChat} className="flex gap-4">
         <Select>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a language" />
@@ -50,8 +79,8 @@ export default function IndexPage() {
           </SelectContent>
         </Select>
 
-        <Button>Start Chat</Button>
-      </div>
+        <Button type="submit">Start Chat</Button>
+      </form>
 
       <Card>
         <CardHeader>
