@@ -29,8 +29,10 @@ import { revalidatePath } from "next/cache"
 import { eq } from "drizzle-orm"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
+import { currentUser } from "@clerk/nextjs"
 
-export default async function IndexPage() {
+export default async function ChatPage({ params }: { params: { ids: string[] } }) {
+  const user = await currentUser();
   const db = drizzle(sql);
   const chatLogs = await db.select().from(dbChatLogs);
 

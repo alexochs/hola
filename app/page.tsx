@@ -16,10 +16,10 @@ export default function IndexPage() {
       </div>
       <div className="flex gap-4">
         <Link
-          href={siteConfig.links.newChat}
+          href={"/scenes"}
           className={buttonVariants()}
         >
-          Start chatting
+          Get started
         </Link>
       </div>
     </section>
