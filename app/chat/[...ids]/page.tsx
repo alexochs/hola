@@ -23,18 +23,30 @@ import Error from "next/error"
 
 import { sql } from '@vercel/postgres';
 import { drizzle } from 'drizzle-orm/vercel-postgres';
-import { dbChatLogs } from "@/db/schema"
+import { dbChatLogs, dbChatScenes } from "@/db/schema"
 import { Configuration, OpenAIApi } from "openai"
 import { revalidatePath } from "next/cache"
 import { eq } from "drizzle-orm"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 import { currentUser } from "@clerk/nextjs"
+import { redirect } from "next/navigation"
 
 export default async function ChatPage({ params }: { params: { ids: string[] } }) {
-  const user = await currentUser();
+  const sceneId = parseInt(params.ids[0]);
+  const chatId = parseInt(params.ids[1]);
+
+  if (!sceneId || !chatId) {
+    redirect("/");
+  }
+
   const db = drizzle(sql);
-  const chatLogs = await db.select().from(dbChatLogs);
+  const user = await currentUser();
+  if (!user) {
+    redirect("/");
+  }
+  const scene = (await db.select().from(dbChatScenes).where(eq(dbChatScenes.id, sceneId)))[0];
+  const chatLogs = await db.select().from(dbChatLogs).where(eq(dbChatLogs.chatId, chatId));
 
   async function startChat() {
     "use server";
@@ -49,7 +61,7 @@ export default async function ChatPage({ params }: { params: { ids: string[] } }
       messages: [
         {
           role: "system",
-          content: "Your name is John Doe. Your goal is to have a conversation with the user, start by introducing yourself. Be friendly, funny and relatable. Keep the conversation going. Make your responses short so the user can understand and read them comfortably.",
+          content: scene.framing,
         }
       ]
     });
@@ -62,6 +74,7 @@ export default async function ChatPage({ params }: { params: { ids: string[] } }
 
     const db = drizzle(sql);
     const result = await db.insert(dbChatLogs).values({
+      chatId: chatId,
       role: message.role,
       content: message.content,
     });
@@ -124,7 +137,7 @@ export default async function ChatPage({ params }: { params: { ids: string[] } }
       messages: [
         {
           role: "system",
-          content: "Your name is John Doe. Your goal is to have a conversation with the user, start by introducing yourself. Be friendly, funny and relatable. Keep the conversation going. Make your responses short so the user can understand and read them comfortably.",
+          content: scene.framing,
         },
         ...history,
         {
@@ -141,6 +154,7 @@ export default async function ChatPage({ params }: { params: { ids: string[] } }
     }
 
     const userResult = await db.insert(dbChatLogs).values({
+      chatId: chatId,
       role: "user",
       content: message,
     });
@@ -150,6 +164,7 @@ export default async function ChatPage({ params }: { params: { ids: string[] } }
     }
 
     const aiResult = await db.insert(dbChatLogs).values({
+      chatId: chatId,
       role: aiMessage.role,
       content: aiMessage.content,
     });
@@ -165,15 +180,15 @@ export default async function ChatPage({ params }: { params: { ids: string[] } }
     <section className="container grid items-center justify-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Start a new dialogue.
+          {scene.name}
         </h1>
         <p className="max-w-[700px] text-lg text-muted-foreground">
-          Choose a language and start speaking with the AI.
+          {scene.description}
         </p>
       </div>
 
       <form action={startChat} className="flex gap-4">
-        <Select>
+        {/*<Select>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a language" />
           </SelectTrigger>
@@ -185,22 +200,21 @@ export default async function ChatPage({ params }: { params: { ids: string[] } }
               <SelectItem value="spanish">Spanish</SelectItem>
             </SelectGroup>
           </SelectContent>
-        </Select>
-
+        </Select>*/}
         <Button type="submit">Start Chat</Button>
       </form>
 
       <Card className="w-full sm:w-[980px]">
-        <CardHeader>
+        {/*<CardHeader>
           <CardTitle>Dialogue</CardTitle>
           <CardDescription>Chat with the AI here</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-2">
+        </CardHeader>*/}
+        <CardContent className="mt-5 flex flex-col gap-2">
           {chatLogs.map((chatLog) => (
             <div className={"chat " + (chatLog.role === "assistant" ? "chat-start" : "chat-end")}>
-              <Button variant="outline" className="chat-image w-10 rounded-full p-0">
+              {chatLog.role === "assistant" ? <Button variant="outline" className="chat-image w-10 rounded-full p-0">
                 <Smile className="h-6 w-6" />
-              </Button>
+              </Button> : <img src={user.imageUrl} className="chat-image w-10 rounded-full" />}
               <div className="chat-bubble text-sm">{chatLog.content}</div>
               <form action={deleteChatLog}>
                 <input type="hidden" name="id" value={chatLog.id} />

@@ -15,7 +15,7 @@ export const dbChats = pgTable("Chats", {
 
 export const dbChatLogs = pgTable("ChatLogs", {
   id: serial("id").primaryKey(),
-  chatId: varchar("chatId").notNull(),
+  chatId: integer("chatId").notNull(),
   role: text("role").notNull(),
   content: text("content").notNull(),
 })

@@ -6,8 +6,12 @@ export const siteConfig = {
     "Hola is a language learning platform that uses AI to help you learn languages faster and more effectively.",
   mainNav: [
     {
-      title: "Home",
-      href: "/",
+      title: "Scenes",
+      href: "/scenes",
+    },
+    {
+      title: "My Chats",
+      href: "/chat",
     },
   ],
   links: {
