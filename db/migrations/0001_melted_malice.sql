@@ -1,0 +1,1 @@
+ALTER TABLE "chatlogs" RENAME TO "ChatLogs";

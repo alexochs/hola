@@ -1,0 +1,44 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "314910d3-4cdf-49d4-bda8-3bfe6d7989a1",
+  "prevId": "ef95816b-dd4b-41b3-bb95-a47566dbe957",
+  "tables": {
+    "ChatLogs": {
+      "name": "ChatLogs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {
+      "\"chatlogs\"": "\"ChatLogs\""
+    },
+    "columns": {}
+  }
+}

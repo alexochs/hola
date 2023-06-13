@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1686662791186,
+      "tag": "0000_tense_deathstrike",
+      "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1686663407483,
+      "tag": "0001_melted_malice",
+      "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1686670135622,
+      "tag": "0002_opposite_killraven",
+      "breakpoints": false
+    }
+  ]
+}
